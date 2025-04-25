@@ -1,0 +1,54 @@
+git cheatsheet
+
+#####Inicialization repo and first push######
+---------------------------------------------
+cd ~/dir
+git init
+git add .
+git commit -m "Initial commit"
+git banch -M main
+git remote add origin git@github.com:arek600r/dir.git
+git push -u origin main
+
+
+####Workflow - push####
+-----------------------
+git add .
+git commit -m "description"
+git push
+
+
+####If forgot git pull, we will see error (failed to push)####
+-------------------------------------------------------------
+git pull --rebase origin main
+git push
+
+
+#####Work on Two PC######
+-------------------------
+Komputer A
+----------
+git add .
+git commit -m "Zmiany z A"
+git push
+
+Komputer B
+----------
+git pull origin main
+git add .
+git commit -m "Zmiany z B"
+git push
+
+
+
+####Status and logs#####
+------------------------
+git status
+git log --oneline --graph (commit's history)
+
+####SSH config####
+------------------
+ssh-keygen -t ed25519 -C "youremail@tutanota.com"
+ssh-add ~/.ssh/id_ed25519
+pbcopy < ~/.ssh/id_ed25519.pub 
+add in /settings/keys w github
