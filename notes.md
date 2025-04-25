@@ -139,3 +139,10 @@ Tip: In PHP, "POST" data "content-type" can only accept "application/x-www-form-
 
 * curl http://admin.academy.htb:PORT/admin/admin.php -X POST -d 'id=key' -H 'Content-Type: application/x-www-form-urlencoded'
 
+
+## Value Fuzzing:
+### Generate list
+* for i in $(seq 1 1000); do echo $i >> ids.txt; done
+### Value Fuzzing
+* ffuf -w ids.txt:FUZZ -u http://admin.academy.htb:PORT/admin/admin.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx
+
