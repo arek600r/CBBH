@@ -118,9 +118,6 @@ Filtering and Validation
 ### Recursive Fuzzing
 - recursion
 - recursion-depth
-
-* ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ -recursion -recursion-depth 1 -e .php -v
-
 ## Domain Fuzzing
 
 ### Subdomain
@@ -145,4 +142,38 @@ Tip: In PHP, "POST" data "content-type" can only accept "application/x-www-form-
 * for i in $(seq 1 1000); do echo $i >> ids.txt; done
 ### Value Fuzzing
 * ffuf -w ids.txt:FUZZ -u http://admin.academy.htb:PORT/admin/admin.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx
+
+# Javascript Deobfuscation
+* look for ```*.js```
+
+### Deobfuscation tools
+* https://jsconsole.com/
+* https://javascript-minifier.com/
+* http://beautifytools.com/javascript-obfuscator.php
+
+### Advanced Deobfuscation
+#### Tools
+* https://matthewfl.com/unPacker.html
+* https://obfuscator.io/
+
+Tip: Ensure you do not leave any empty lines before the script, as it may affect the deobfuscation process and give inaccurate results.
+Tip: We add the "-s" flag to reduce cluttering the response with unnecessary data
+
+```
+function generateSerial() {
+  ...SNIP...
+  var xhr = new XMLHttpRequest;
+  var url = "/serial.php";
+  xhr.open("POST", url, true);
+  xhr.send(null);
+};
+```
+### Summary
+
+* First, we uncovered the HTML source code of the webpage and located the JavaScript code.
+* Then, we learned about various ways to obfuscate JavaScript code.
+* After that, we learned how to beautify and deobfuscate minified and obfuscated JavaScript code.
+* Next, we went through the deobfuscated code and analyzed its main function
+* We then learned about HTTP requests and were able to replicate the main function of the obfuscated JavaScript code.
+* Finally, we learned about various methods to encode and decode strings.
 
