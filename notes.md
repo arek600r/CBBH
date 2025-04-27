@@ -177,3 +177,103 @@ function generateSerial() {
 * We then learned about HTTP requests and were able to replicate the main function of the obfuscated JavaScript code.
 * Finally, we learned about various methods to encode and decode strings.
 
+### To try:
+Machines
+* Hackback I
+
+Challenges
+* Query M
+* Canvas E
+* Hypercraft M
+* Fake News E
+
+Fortresses
+* Jet
+* AWS
+
+# XSS
+
+## Stored XSS
+
+```
+Tip: Many modern web applications utilize cross-domain IFrames to handle user input, so that even if the web form is vulnerable to XSS, it would not be a vulnerability on the main web application. This is why we are showing the value of window.origin in the alert box, instead of a static value like 1. In this case, the alert box would reveal the URL it is being executed on, and will confirm which form is the vulnerable one, in case an IFrame was being used.
+```
+
+* <script>alert()</script>
+* <script>print()</script>
+
+## Reflected XSS
+
+* check, if address contain some value from the user
+
+## DOM XSS
+
+### Source & Sink
+```
+Sink is the function that writes the user input to a DOM Object. 
+```
+* document.write()
+* DOM.innerHTML
+* DOM.outerHTML
+
+```
+jQuery sink's
+```
+
+* add()
+* after()
+* append()
+
+Example:
+```
+var pos = document.URL.indexOf("task=");
+var task = document.URL.substring(pos + 5, document.URL.length);
+document.getElementById("todo").innerHTML = "<b>Next Task:</b> " + decodeURIComponent(task);
+```
+
+### DOM ATTACKS
+```
+<img src="" onerror=alert(window.origin)>
+```
+
+## XSS Discovery
+
+### Automated Discovery
+
+```
+Scanners usually do two types of scanning: A Passive Scan, which reviews client-side code for potential DOM-based vulnerabilities, and an Active Scan, which sends various types of payloads to attempt to trigger an XSS through payload injection in the page source.
+```
+#### Tools:
+* XSS Strike
+```
+git clone https://github.com/s0md3v/XSStrike.git
+cd XSStrike
+pip install -r requirements.txt
+python xsstrike.py
+python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test" 
+```
+* Brute XSS
+* XSSer
+
+
+### Manual Discovery
+* Payloads:
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/README.md
+https://github.com/payloadbox/xss-payload-list
+
+```
+Note: XSS can be injected into any input in the HTML page, which is not exclusive to HTML input fields, but may also be in HTTP headers like the Cookie or User-Agent (i.e., when their values are displayed on the page).
+```
+```
+Better way to look for XSS is write a python script, compare to manually test
+<PLACE FOR SCRIPT>
+
+```
+
+* Code Review
+
+
+## Defacing
+Changing its look for anyone who visits the website
+
+### Defacement Elements
