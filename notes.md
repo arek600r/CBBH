@@ -368,3 +368,60 @@ We will try to add one of the below payloads after our username and see if it ca
 |# |   %23|
 |; |   %3B|
 |) |   %29|
+
+Note
+```
+Sometimes, we may have to use the URL encoded version of the payload. An example of this is when we put our payload directly in the URL 'i.e. HTTP GET request'.
+```
+Note
+```
+The payload we used above is one of many auth bypass payloads we can use to subvert the authentication logic. You can find a comprehensive list of SQLi auth bypass payloads in PayloadAllTheThings, each of which works on a certain type of SQL queries.
+```
+
+## Using Comments
+
+Note
+```
+In SQL, using two dashes only is not enough to start a comment. So, there has to be an empty space after them, so the comment starts with (-- ), with a space at the end. This is sometimes URL encoded as (--+), as spaces in URLs are encoded as (+). To make it clear, we will add another (-) at the end (-- -), to show the use of a space character.
+The # symbol can be used as well.
+```
+
+|Symbol|
+|--  |
+|--+ |
+|#   |
+|/**/|
+
+Tip
+```
+if you are inputting your payload in the URL within a browser, a (#) symbol is usually considered as a tag, and will not be passed as part of the URL. In order to use (#) as a comment within a browser, we can use '%23', which is an URL encoded (#) symbol.
+```
+### Auth Bypass with comments
+```
+SELECT * FROM logins WHERE username='admin'-- ' AND password = 'something';
+```
+The username is now admin, and the remainder of the query is now ignored as a comment
+
+```
+SELECT * FROM logins WHERE (username='admin' AND id > 1) AND password = 'd41d8cd98f00b204e9800998ecf8427e';
+SELECT * FROM logins WHERE (username='admin') or 1=1-- ' AND id > 1) AND password = 'd41d8cd98f00b204e9800998ecf8427e';
+```
+
+
+## Union Clause
+
+The Union clause is used to combine results from multiple SELECT statements. This means that through a UNION injection, we will be able to SELECT and dump data from all across the DBMS, from multiple tables and databases. 
+
+Note
+```
+The data types of the selected columns on all positions should be the same.
+A UNION statement can only operate on SELECT statements with an equal number of columns
+```
+
+Tip
+```
+For advanced SQL injection, we may want to simply use 'NULL' to fill other columns, as 'NULL' fits all data types.
+```
+```
+SELECT * from products where product_id UNION SELECT username, 2, 3, 4 from passwords-- '
+```
