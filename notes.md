@@ -332,3 +332,40 @@ cd /tmp/tmpserver
 vi index.php #at this step we wrote our index.php file
 sudo php -S 0.0.0.0:80
 ```
+
+# SQL INJECTION
+---------------
+
+```
+'%1'; DROP TABLE users;'
+select * from logins where username like '%1'; DROP TABLE users;'
+```
+Notice how we added a single quote (') after "1", in order to escape the bounds of the user-input in ('%$searchInput').
+Note: We added another SQL query after a semi-colon (;). Though this is actually not possible with MySQL, it is possible with MSSQL and PostgreSQL. 
+
+### SQLInjection Type
+---------------------
+
+#### In-band SQLi (output visible directly in the app)
+* Union-based: uses UNION SELECT; attacker must know the number and position of columns to inject output into a visible one.
+* Error-based: intentionally triggers SQL errors to extract data from error messages.
+
+#### Blind SQLi (no direct output – inference via logic)
+* Boolean-based: uses conditions like IF TRUE THEN show normal page; detects changes in response.
+* Time-based: uses conditions like IF TRUE THEN SLEEP(5); detects delays in server response.
+
+#### Out-of-band SQLi (no response → data exfiltrated via external channel)
+* Sends data through DNS or HTTP to an attacker-controlled server.
+
+
+## SQLi Discovery
+We will try to add one of the below payloads after our username and see if it causes any errors or changes how the page behaves:
+
+|Payload|   URL Encoded|
+---
+|||
+|'|   %27|
+|"|   %22|
+|#|   %23|
+|;|   %3B|
+|)|   %29|
