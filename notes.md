@@ -361,11 +361,10 @@ Note: We added another SQL query after a semi-colon (;). Though this is actually
 ## SQLi Discovery
 We will try to add one of the below payloads after our username and see if it causes any errors or changes how the page behaves:
 
-|Payload|   URL Encoded|
-|-|-|-|
-|||
-|'|   %27|
-|"|   %22|
-|#|   %23|
-|;|   %3B|
-|)|   %29|
+|Payload |   URL Encoded|
+|--------|--------------|
+|' |   %27|
+|" |   %22|
+|# |   %23|
+|; |   %3B|
+|) |   %29|
