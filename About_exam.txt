@@ -1,0 +1,26 @@
+ Common Vulnerability Themes:
+
+    Cross-Site Scripting (XSS) (stored, reflected, DOM-based)
+    SQL Injection (including blind SQLi)
+    Broken Access Control (IDOR, privilege escalation)
+    CSRF
+    Server-Side Template Injection (SSTI)
+    Deserialization bugs
+    Business logic flaws
+    Authentication/authorization bypasses
+
+Technologies Covered:
+
+    Web apps in Node.js, PHP, Python, etc.
+    Frontends with React, Angular, etc.
+    APIs (RESTful)
+    Cloud or container-based deployments (minimal focus)
+
+ Tips to Succeed in HTB CBBH Exam
+
+    Practice proper recon: Don’t rush to exploit — look for misconfigurations, hidden endpoints, and subtle logic flaws.
+    Think like a developer: The exam is more about bypassing logic than brute-forcing.
+    Document everything as you go: You’ll need this for your report. No partial credit if you forget how you did something.
+    Stay calm under pressure: You don’t need all 5 vulnerabilities — 3 good ones can earn you the cert.
+    Use your HTB notes: HTB lets you use your Academy notes and knowledge base during the exam. Use them smartly.
+
