@@ -362,7 +362,7 @@ Note: We added another SQL query after a semi-colon (;). Though this is actually
 We will try to add one of the below payloads after our username and see if it causes any errors or changes how the page behaves:
 
 |Payload|   URL Encoded|
----
+|-|-|-|
 |||
 |'|   %27|
 |"|   %22|
